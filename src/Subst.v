@@ -1,5 +1,5 @@
 Require Export Untyped.
-Require Import Omega.
+Require Import Lia.
 Require Import Coq.Arith.Compare_dec.
 Require Import Coq.Arith.Plus.
 Require Import Coq.Arith.Lt.
@@ -20,7 +20,7 @@ Definition shift (b: nat) (t: lterm) : lterm :=
 
 Fixpoint subst (v: nat) (r: lterm) (t: lterm) : lterm :=
   match t with
-      | Var i =>  match (nat_compare i v) with
+      | Var i =>  match (Nat.compare i v) with
                            | Lt => Var i
                            | Eq => lift v 0 r
                            | Gt => Var (i - 1)
@@ -59,10 +59,10 @@ Proof.
           destruct (lt_dec k j). reflexivity. contradict H1. auto.
       (* k >= i *)
       intros. simpl.
-          destruct (lt_dec (k+m) j). contradict l. omega. apply f_equal.
-          omega.
+          destruct (lt_dec (k+m) j). contradict l. lia. apply f_equal.
+          lia.
     (* N := Lam .. *)
-    intros. simpl. apply f_equal. rewrite N2. reflexivity. omega.
+    intros. simpl. apply f_equal. rewrite N2. reflexivity. lia.
     (* N := App .. .. *)
     intros. simpl. rewrite IHN1. rewrite IHN2. auto. auto. auto.
 Qed.
@@ -82,18 +82,18 @@ Proof.
           (* Eq *)
           rewrite plus_comm. reflexivity.
           (* Lt *)
-          contradict l. omega.
+          contradict l. lia.
           (* Gt *)
-          intros. apply nat_compare_gt in H1. contradict H1. omega.
+          intros. apply nat_compare_gt in H1. contradict H1. lia.
         (* ~ v < k *)
         simpl. case_eq (nat_compare (v+i) (j+i)).
           (* Eq *)
           intros. rewrite plus_comm. reflexivity.
           (* Lt *)
-          intros. apply nat_compare_lt in H1. contradict H1. omega.
+          intros. apply nat_compare_lt in H1. contradict H1. lia.
           (* Gt *)
-          intros. apply nat_compare_gt in H1. contradict H1. omega.
-        split. omega. omega.
+          intros. apply nat_compare_gt in H1. contradict H1. lia.
+        split. lia. lia.
       (* v Lt j *)
       intros. apply nat_compare_lt in H0. destruct (lt_dec v k).
         (* v < k *)
@@ -101,11 +101,11 @@ Proof.
           (* v < k *)
           case_eq (nat_compare v (j + i)).
             (* Eq *)
-            intros. apply nat_compare_eq in H1. contradict H0. omega.
+            intros. apply nat_compare_eq in H1. contradict H0. lia.
             (* Lt *)
             intros. reflexivity.
             (* Gt *)
-            intros. apply nat_compare_gt in H1. contradict H1. omega.
+            intros. apply nat_compare_gt in H1. contradict H1. lia.
           (* ~ v < k *)
           contradiction.
         (* ~ v < k *)
@@ -115,31 +115,31 @@ Proof.
           (* ~ v < k *)
           case_eq (nat_compare (v+i) (j+i)).
             (* Eq *)
-            intros. apply nat_compare_eq in H1. contradict H0. omega.
+            intros. apply nat_compare_eq in H1. contradict H0. lia.
             (* Lt *)
             intros. reflexivity.
             (* Gt *)
-            intros. apply nat_compare_gt in H1. contradict H0. omega.
+            intros. apply nat_compare_gt in H1. contradict H0. lia.
       (* v Gt j *)
       intros. apply nat_compare_gt in H0. simpl. destruct (lt_dec (v - 1) k).
         (* v - 1 < k *)
-        contradict l. omega.
+        contradict l. lia.
         (* ~ v - 1 < k *)
         destruct (lt_dec v k).
           (* v < k *)
-          contradict l. omega.
+          contradict l. lia.
           (* ~ v < k *)
           simpl. case_eq (nat_compare (v + i) (j + i)).
             (* Eq *)
-            intros. apply nat_compare_eq in H1. contradict H0. omega.
+            intros. apply nat_compare_eq in H1. contradict H0. lia.
             (* Lt *)
-            intros. apply nat_compare_lt in H1. contradict H0. omega.
+            intros. apply nat_compare_lt in H1. contradict H0. lia.
             (* Gt *)
-            intros. apply nat_compare_gt in H1. f_equal. omega.
+            intros. apply nat_compare_gt in H1. f_equal. lia.
     (* N := Lam N' *)
     intros. simpl. f_equal.
-    assert (U: j + 1 + i = j + i + 1). omega. rewrite <- U.
-    apply (IHN' L i (j+1) (k+1)). omega.
+    assert (U: j + 1 + i = j + i + 1). lia. rewrite <- U.
+    apply (IHN' L i (j+1) (k+1)). lia.
     (* N := App N1 N2 *)
     intros. simpl. f_equal.
     apply IHN1. assumption.
@@ -155,10 +155,10 @@ Proof.
     intros. simpl. assert (n < i). apply lt_le_trans with k. assumption. apply H.
     apply nat_compare_lt in H0. rewrite H0. reflexivity.
 
-    simpl. apply not_lt in n0. assert (i < n + (j + 1)). omega.
-     apply nat_compare_gt in H0. rewrite H0. apply f_equal. omega.
+    simpl. apply not_lt in n0. assert (i < n + (j + 1)). lia.
+     apply nat_compare_gt in H0. rewrite H0. apply f_equal. lia.
 
-  intros. simpl. apply f_equal. apply IHL. omega.
+  intros. simpl. apply f_equal. apply IHL. lia.
   intros. simpl. rewrite IHL1. rewrite IHL2. reflexivity.
   auto. auto.
 Qed.
@@ -174,13 +174,13 @@ Proof.
   intros. simpl. case_eq (nat_compare n i).
   (* n = i *)
     intros. simpl. apply nat_compare_eq in H0. rewrite H0. simpl.
-    assert (i < j + 1). omega. apply nat_compare_lt in H1. rewrite H1.
+    assert (i < j + 1). lia. apply nat_compare_lt in H1. rewrite H1.
     simpl. assert (i = i). reflexivity. apply nat_compare_eq_iff in H2.
     rewrite H2. clear H1 H2. rewrite lift_lem2.
-    assert (Jeq: j - i + i = j). omega. rewrite Jeq. reflexivity. omega.
+    assert (Jeq: j - i + i = j). lia. rewrite Jeq. reflexivity. lia.
   (* n < i *)
     simpl. intros. apply nat_compare_lt in H0.
-    assert (n < j). omega. assert (n < j + 1). omega.
+    assert (n < j). lia. assert (n < j + 1). lia.
     apply nat_compare_lt in H0.
     apply nat_compare_lt in H1.
     apply nat_compare_lt in H2.
@@ -191,14 +191,14 @@ Proof.
     case_eq (nat_compare n (j + 1)).
       (* n = j + 1 *)
       intros. apply nat_compare_eq in H1. rewrite H1.
-      assert (Jeq: j + 1 - 1 = j). omega. rewrite Jeq. simpl.
+      assert (Jeq: j + 1 - 1 = j). lia. rewrite Jeq. simpl.
       assert (HH: nat_compare j j = Eq). assert (JJ: j = j). reflexivity.
           apply nat_compare_eq_iff in JJ. assumption.
-      rewrite HH. rewrite lift_lem3. reflexivity. omega.
+      rewrite HH. rewrite lift_lem3. reflexivity. lia.
       (* n < j + 1 *)
       intros. apply nat_compare_lt in H1. simpl.
       assert (HLt: nat_compare (n-1) j = Lt).
-        assert (n - 1 < j). omega. apply nat_compare_lt in H2. assumption.
+        assert (n - 1 < j). lia. apply nat_compare_lt in H2. assumption.
         rewrite HLt.
       assert (Hgt: nat_compare n i = Gt).
         apply nat_compare_gt in H0. assumption.
@@ -207,10 +207,10 @@ Proof.
       (* n > j + 1 *)
       intros. apply nat_compare_gt in H1. simpl.
       assert (Ineq1: nat_compare (n - 1) j = Gt).
-        assert (F: n - 1 > j). omega.
+        assert (F: n - 1 > j). lia.
         apply nat_compare_gt in F. assumption. rewrite Ineq1.
       assert (Ineq2: nat_compare (n - 1) i = Gt).
-        assert (n - 1 > i). omega. apply nat_compare_gt in H2. assumption.
+        assert (n - 1 > i). lia. apply nat_compare_gt in H2. assumption.
         rewrite Ineq2.
       reflexivity.
 Qed.
@@ -230,8 +230,8 @@ Proof.
   induction M.
   intros. intros. apply var_subst_lemma. assumption.
   intros. simpl. apply f_equal. rewrite IHM.
-  assert (AllGood: j + 1 - (i + 1) = j - i). omega.
-  rewrite AllGood. reflexivity. omega.
+  assert (AllGood: j + 1 - (i + 1) = j - i). lia.
+  rewrite AllGood. reflexivity. lia.
   intros. simpl. rewrite IHM1. rewrite IHM2. reflexivity.
   auto. auto.
 Qed.
@@ -252,9 +252,9 @@ Proof.
   intros. simpl. clear H. rewrite nat_compare_lt in l. rewrite l.
   reflexivity.
   intros. simpl.
-  case_eq (nat_compare (n+1) k). intros. apply nat_compare_eq_iff in H0. omega.
-  intros. apply nat_compare_lt in H0. omega.
-  intros. f_equal. omega.
+  case_eq (nat_compare (n+1) k). intros. apply nat_compare_eq_iff in H0. lia.
+  intros. apply nat_compare_lt in H0. lia.
+  intros. f_equal. lia.
 
   intros. simpl. f_equal.
   apply IHt.
@@ -272,16 +272,16 @@ Proof.
   induction t.
   unfold shift. simpl.
   case_eq (lt_dec n 1).
-  intros. simpl. assert (HH: n = 0). omega.
+  intros. simpl. assert (HH: n = 0). lia.
   rewrite HH. simpl.
   case_eq (lt_dec k 1).
-  intros. simpl. assert (HHH: k = 0). omega.
+  intros. simpl. assert (HHH: k = 0). lia.
   rewrite HHH. reflexivity.
   intros.
   case_eq (lt_dec 0 k).
   intros. simpl. destruct k.
   reflexivity. reflexivity.
-  intros. omega.
+  intros. lia.
 
   intros.
   case_eq (lt_dec n k).
@@ -292,20 +292,20 @@ Proof.
   case_eq (lt_dec k (S k)).
   intros. simpl. replace (nat_compare k k) with Eq. reflexivity.
   symmetry. apply nat_compare_eq_iff. reflexivity.
-  intros. omega. intros. apply nat_compare_lt in H1.
+  intros. lia. intros. apply nat_compare_lt in H1.
   case_eq (lt_dec n (S k)).
   intros. simpl.
   replace (nat_compare n k) with Lt. reflexivity.
   symmetry. apply nat_compare_lt. assumption.
-  intros. omega. intros. apply nat_compare_gt in H1. omega.
+  intros. lia. intros. apply nat_compare_gt in H1. lia.
   intros.
   case_eq (lt_dec n (S k)).
-  intros. assert (n = k). omega. rewrite H2.
+  intros. assert (n = k). lia. rewrite H2.
   simpl. replace (nat_compare k k) with Eq.
   reflexivity. symmetry. apply nat_compare_eq_iff. reflexivity.
   intros. simpl.
-  replace (nat_compare (n+1) k) with Gt. f_equal. omega.
-  symmetry. apply nat_compare_gt. omega.
+  replace (nat_compare (n+1) k) with Gt. f_equal. lia.
+  symmetry. apply nat_compare_gt. lia.
 
 
   intros. simpl. f_equal. apply IHt.
@@ -331,8 +331,8 @@ Proof.
   simpl. rewrite H0.
   case_eq (lt_dec n (k1 + b2)).
   intros. reflexivity.
-  intros. omega.
-  intros. omega.
+  intros. lia.
+  intros. lia.
 
   intros.
   case_eq (lt_dec n b2).
@@ -340,22 +340,22 @@ Proof.
   rewrite H0.
   case_eq (lt_dec (n+k1) (k1+b2)).
   intros. reflexivity.
-  intros. omega.
+  intros. lia.
   intros. simpl.
   case_eq (lt_dec (n+k2) b1).
-  intros. omega. intros.
+  intros. lia. intros.
   case_eq (lt_dec (n+k1) (k1+b2)).
-  intros. omega.
-  intros. f_equal. omega.
+  intros. lia.
+  intros. f_equal. lia.
 
   intros.
   simpl.
   f_equal. rewrite IHM.
-  f_equal. omega. omega.
+  f_equal. lia. lia.
 
   intros.
-  simpl. f_equal. apply IHM1. omega.
-  apply IHM2. omega.
+  simpl. f_equal. apply IHM1. lia.
+  apply IHM2. lia.
 Qed.
 
 (** This is a reverse statement of [lift_lift]: **)
@@ -366,9 +366,9 @@ Lemma lift_lift_rev:
   lift wk k (lift ws s t) = lift ws s (lift wk (k - ws) t).
 Proof.
   intros.
-  replace k with (ws + (k - ws)) by omega.
-  rewrite <- lift_lift by omega.
-  replace (ws + (k - ws) - ws) with (k - ws) by omega.
+  replace k with (ws + (k - ws)) by lia.
+  rewrite <- lift_lift by lia.
+  replace (ws + (k - ws) - ws) with (k - ws) by lia.
   reflexivity.
 Qed.
 
@@ -385,26 +385,26 @@ Proof.
   induction v.
   intros ? ? ? ? HH. simpl. case_eq (nat_compare n 0).
   intros H. apply nat_compare_eq_iff in H. rewrite H. simpl.
-  replace (b + 1) with (S b) by omega. simpl.
+  replace (b + 1) with (S b) by lia. simpl.
   rewrite lift_0_ident. rewrite lift_0_ident.
-  replace (b - 0) with b by omega. reflexivity.
+  replace (b - 0) with b by lia. reflexivity.
 
-  intros. simpl. apply nat_compare_lt in H. omega.
+  intros. simpl. apply nat_compare_lt in H. lia.
   intros. simpl. apply nat_compare_gt in H.
 
   assert (H1: exists n', n = (S n')).
   inversion H. exists 0. reflexivity.
   exists m. reflexivity.
 
-  destruct H1. rewrite H0. replace (S x - 1) with x by omega.
-  simpl.  replace (b +1) with (S b) by omega.
+  destruct H1. rewrite H0. replace (S x - 1) with x by lia.
+  simpl.  replace (b +1) with (S b) by lia.
   case_eq (lt_dec x b).
   simpl.
   intros. case_eq (lt_dec (S x) (S b)).
-  intros. simpl. f_equal. omega.
-  intros. omega. intros.
-  case_eq (lt_dec (S x) (S b)). intros. simpl. omega.
-  intros. simpl. f_equal. omega.
+  intros. simpl. f_equal. lia.
+  intros. lia. intros.
+  case_eq (lt_dec (S x) (S b)). intros. simpl. lia.
+  intros. simpl. f_equal. lia.
 
   intros ? ? ? ? HH. simpl.
   case_eq (nat_compare n (S v)).
@@ -413,18 +413,18 @@ Proof.
   case_eq (lt_dec (S v) (b + 1)).
   intros.
   simpl. replace (nat_compare v v) with Eq.
-  replace b with (((b - S v) + (S v))) by omega.
+  replace b with (((b - S v) + (S v))) by lia.
   rewrite lift_lift_rev. reflexivity.
-  omega. symmetry. apply nat_compare_eq_iff. reflexivity.
+  lia. symmetry. apply nat_compare_eq_iff. reflexivity.
   intros. simpl.
   case_eq (nat_compare (v+i) v).
   intros. apply nat_compare_eq_iff in H1.
-  assert (HHH: i = 0). omega.
+  assert (HHH: i = 0). lia.
   rewrite HHH. rewrite lift_0_ident.
   f_equal. rewrite lift_0_ident. reflexivity.
   intros. apply nat_compare_lt in H1.
-  omega. intros. apply nat_compare_gt in H1.
-  omega.
+  lia. intros. apply nat_compare_gt in H1.
+  lia.
   intros.
   apply nat_compare_lt in H.
   simpl.
@@ -434,29 +434,29 @@ Proof.
   simpl. intros.
   replace (nat_compare n (S v)) with Lt.
   reflexivity. symmetry. apply nat_compare_lt. assumption.
-  intros. omega.
-  intros. omega.
+  intros. lia.
+  intros. lia.
   intros. apply nat_compare_gt in H.
   simpl. case_eq (lt_dec (n - 1) b).
   intros. case_eq (lt_dec n (b+1)).
   intros. simpl. replace (nat_compare n (S v)) with Gt.
   reflexivity. symmetry. apply nat_compare_gt. assumption.
-  intros. omega.
+  intros. lia.
   intros. case_eq (lt_dec n (b+1)). intros.
-  omega. intros. simpl.
+  lia. intros. simpl.
   case_eq (nat_compare (n+i) (S v)).
   intros. apply nat_compare_eq_iff in H2.
-  omega.
+  lia.
   intros. apply nat_compare_lt in H2.
-  omega.
-  intros. f_equal. omega.
+  lia.
+  intros. f_equal. lia.
 
   intros.
   simpl. f_equal.
-  rewrite IHM. f_equal. f_equal. omega. omega.
+  rewrite IHM. f_equal. f_equal. lia. lia.
 
-  intros. simpl. f_equal. apply IHM1. omega.
-  apply IHM2. omega.
+  intros. simpl. f_equal. apply IHM1. lia.
+  apply IHM2. lia.
 Qed.
 
 (** Finally, some trivialities for convenient rewriting. **)

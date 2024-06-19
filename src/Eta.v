@@ -64,7 +64,7 @@ Lemma eta_prim_substitutive:
     eta_prim M N -> eta_prim (subst n L M) (subst n L N).
 Proof.
   intros.
-  assert (Sn_eq: n + 1 = S n). omega.
+  assert (Sn_eq: n + 1 = S n). lia.
   destruct H.
   assert (HH: subst n L (Lam (App f (Var 0))) =
                Lam (App (subst (S n) L f) (Var 0))).
@@ -75,7 +75,7 @@ Proof.
   unfold shift.
   rewrite lift_lem2. simpl. rewrite H. rewrite Sn_eq.
   unfold shift.
-  reflexivity. omega.
+  reflexivity. lia.
 Qed.
 
 Lemma eta_substitutive:
@@ -107,9 +107,9 @@ Proof.
   unfold shift.
   apply eta_base. unfold shift.
   rewrite lift_lift_rev.
-  replace (b + 1 - 1) with b by omega. reflexivity.
-  omega.
-  intros. omega.
+  replace (b + 1 - 1) with b by lia. reflexivity.
+  lia.
+  intros. lia.
 Qed.
 
 
@@ -273,13 +273,13 @@ Proof.
   simpl. intros. constructor. apply IHeta_par1. apply IHeta_par2.
 
   simpl. intros.
-  replace (b +1) with (S b) by omega. simpl.
-  unfold shift. replace (S b) with (b+1) by omega.
+  replace (b +1) with (S b) by lia. simpl.
+  unfold shift. replace (S b) with (b+1) by lia.
   rewrite H.
   apply eta_par_base with (lift k b N).
-  unfold shift. replace (S b) with (b+1) by omega.
-  rewrite lift_lift_rev. replace (b+1-1) with b by omega.
-  reflexivity. omega.
+  unfold shift. replace (S b) with (b+1) by lia.
+  rewrite lift_lift_rev. replace (b+1-1) with b by lia.
+  reflexivity. lia.
   apply IHeta_par.
 Qed.
 
@@ -295,11 +295,11 @@ Proof.
   simpl. constructor. apply IHeta_par.
   simpl. constructor. apply IHeta_par1. apply IHeta_par2.
   intros.
-  simpl. replace (n+1) with (S n) by omega.
-  rewrite H. replace (S n) with (n+1) by omega.
+  simpl. replace (n+1) with (S n) by lia.
+  rewrite H. replace (S n) with (n+1) by lia.
   rewrite <- lift_lem2.
   apply eta_par_base with (subst n L N). reflexivity.
-  apply IHeta_par. omega.
+  apply IHeta_par. lia.
 Qed.
 
 (** [eta_par] is fully closed under parallel substitution **)
@@ -321,12 +321,12 @@ Proof.
                                     apply IHeta_par2. assumption.
 
   intros.
-  simpl. replace (n+1) with (S n) by omega. simpl.
+  simpl. replace (n+1) with (S n) by lia. simpl.
   rewrite H. simpl.
   apply eta_par_base with (subst n N N0).
-  unfold shift. replace (S n) with (n+1) by omega.
+  unfold shift. replace (S n) with (n+1) by lia.
   rewrite lift_lem2. reflexivity.
-  omega.
+  lia.
   apply IHeta_par. assumption.
 Qed.
 

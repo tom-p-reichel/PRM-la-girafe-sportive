@@ -48,8 +48,8 @@ Proof.
   intros.
   inversion_clear H.
   simpl.
-  rewrite lift_distr_subst. replace (b - 0) with b by omega.
-  apply bred_base. omega.
+  rewrite lift_distr_subst. replace (b - 0) with b by lia.
+  apply bred_base. lia.
 
   simpl. constructor. auto.
 
@@ -274,13 +274,13 @@ Proof.
       apply IHbeta_par2.
   intros.
   unfold shift. simpl. rewrite lift_distr_subst.
-  replace (k - 0) with k by omega.
+  replace (k - 0) with k by lia.
   replace (lift 1) with shift.
   apply beta_par_base.
       apply IHbeta_par1.
       apply IHbeta_par2.
   reflexivity.
-  omega.
+  lia.
 Qed.
 
 (** Transitive closure of [beta_par] **)
