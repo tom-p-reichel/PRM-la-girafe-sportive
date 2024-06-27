@@ -5,7 +5,7 @@ Require Import Coq.Program.Equality.
 Require Import Coq.Arith.Compare_dec.
 Require Import Coq.Arith.Plus.
 Require Import Coq.Arith.Lt.
-Require Import Omega.
+Require Import Lia.
 
 Require Import Untyped.
 Require Import Subst.

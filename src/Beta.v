@@ -22,6 +22,10 @@ Inductive bred : lterm -> lterm -> Prop :=
 (** Consider the following two examples of one-step beta reduction.
 *)
 
+Require Import String.
+
+Local Open Scope string_scope.
+
 Example triv_bred : bred ((\"x" ~> `"x") $ `"y") (`"y").
 Proof. apply bred_base. Qed.
 

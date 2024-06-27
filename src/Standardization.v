@@ -2,7 +2,7 @@ Require Import Untyped.
 Require Import Subst.
 Require Import Beta.
 
-Require Import Omega.
+Require Import Lia.
 Require Import Relation_Operators.
 Require Import Coq.Program.Equality.
 

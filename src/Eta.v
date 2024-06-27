@@ -7,6 +7,10 @@ Require Import Coq.Structures.Equalities.
 Require Import Coq.Program.Equality.
 Require Import Coq.Arith.Compare_dec.
 
+Require Import String.
+
+Local Open Scope string_scope.
+
 Module Export Eta.
 
 (** * $\eta$#η#-conversion *)
