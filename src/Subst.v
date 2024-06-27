@@ -70,15 +70,15 @@ Qed.
 Lemma lift_lem2:
   forall (N L: lterm) (i j k: nat),
   k <= j -> lift i k (subst j L N) = subst (j+i) L (lift i k N).
-Proof.
+Proof. (* This proof was automatically repaired. *)
   induction N as [v | N' | N1 ].
     (* N := Var v *)
-    intros. simpl. case_eq (nat_compare v j).
+    intros. simpl. case_eq (v ?= j).
       (* v Eq j *)
       intros. apply nat_compare_eq in H0. rewrite lift_fuse.
       destruct (lt_dec v k).
         (* v < k *)
-        simpl. case_eq (nat_compare v (j + i)).
+        simpl. case_eq (v ?= j + i).
           (* Eq *)
           rewrite plus_comm. reflexivity.
           (* Lt *)
@@ -86,7 +86,7 @@ Proof.
           (* Gt *)
           intros. apply nat_compare_gt in H1. contradict H1. lia.
         (* ~ v < k *)
-        simpl. case_eq (nat_compare (v+i) (j+i)).
+        simpl. case_eq (v+i ?= j+i).
           (* Eq *)
           intros. rewrite plus_comm. reflexivity.
           (* Lt *)
@@ -99,7 +99,7 @@ Proof.
         (* v < k *)
         simpl. destruct (lt_dec v k).
           (* v < k *)
-          case_eq (nat_compare v (j + i)).
+          case_eq (v ?= j + i).
             (* Eq *)
             intros. apply nat_compare_eq in H1. contradict H0. lia.
             (* Lt *)
@@ -113,7 +113,7 @@ Proof.
           (* v < k *)
           contradiction.
           (* ~ v < k *)
-          case_eq (nat_compare (v+i) (j+i)).
+          case_eq (v+i ?= j+i).
             (* Eq *)
             intros. apply nat_compare_eq in H1. contradict H0. lia.
             (* Lt *)
@@ -129,7 +129,7 @@ Proof.
           (* v < k *)
           contradict l. lia.
           (* ~ v < k *)
-          simpl. case_eq (nat_compare (v + i) (j + i)).
+          simpl. case_eq (v+i ?= j+i).
             (* Eq *)
             intros. apply nat_compare_eq in H1. contradict H0. lia.
             (* Lt *)
@@ -170,12 +170,12 @@ Lemma var_subst_lemma: forall (i j n: nat), forall (N L: lterm),
    (i <= j) ->
        subst j L (subst i N (Var n)) =
                  subst i (subst (j-i) L N) (subst (j+1) L (Var n)).
-Proof.
-  intros. simpl. case_eq (nat_compare n i).
+Proof. (* This proof was automatically repaired. *)
+  intros. simpl. case_eq (n ?= i).
   (* n = i *)
     intros. simpl. apply nat_compare_eq in H0. rewrite H0. simpl.
     assert (i < j + 1). lia. apply nat_compare_lt in H1. rewrite H1.
-    simpl. assert (i = i). reflexivity. apply nat_compare_eq_iff in H2.
+    simpl. assert (i = i). reflexivity. apply Nat.compare_eq_iff  in H2.
     rewrite H2. clear H1 H2. rewrite lift_lem2.
     assert (Jeq: j - i + i = j). lia. rewrite Jeq. reflexivity. lia.
   (* n < i *)
@@ -188,28 +188,28 @@ Proof.
   (* n > i *)
     intros.
     apply nat_compare_gt in H0.
-    case_eq (nat_compare n (j + 1)).
+    case_eq (Nat.compare  n (j + 1)).
       (* n = j + 1 *)
       intros. apply nat_compare_eq in H1. rewrite H1.
       assert (Jeq: j + 1 - 1 = j). lia. rewrite Jeq. simpl.
-      assert (HH: nat_compare j j = Eq). assert (JJ: j = j). reflexivity.
-          apply nat_compare_eq_iff in JJ. assumption.
+      assert (HH: Nat.compare  j j = Eq ). assert (JJ: j = j). reflexivity.
+          apply Nat.compare_eq_iff . assumption.
       rewrite HH. rewrite lift_lem3. reflexivity. lia.
       (* n < j + 1 *)
       intros. apply nat_compare_lt in H1. simpl.
-      assert (HLt: nat_compare (n-1) j = Lt).
+      assert (HLt: Nat.compare  (n-1) j = Lt ).
         assert (n - 1 < j). lia. apply nat_compare_lt in H2. assumption.
         rewrite HLt.
-      assert (Hgt: nat_compare n i = Gt).
+      assert (Hgt: Nat.compare  n i = Gt).
         apply nat_compare_gt in H0. assumption.
         rewrite Hgt.
       reflexivity.
       (* n > j + 1 *)
       intros. apply nat_compare_gt in H1. simpl.
-      assert (Ineq1: nat_compare (n - 1) j = Gt).
+      assert (Ineq1: Nat.compare (n - 1) j = Gt).
         assert (F: n - 1 > j). lia.
         apply nat_compare_gt in F. assumption. rewrite Ineq1.
-      assert (Ineq2: nat_compare (n - 1) i = Gt).
+      assert (Ineq2: Nat.compare  (n - 1) i = Gt).
         assert (n - 1 > i). lia. apply nat_compare_gt in H2. assumption.
         rewrite Ineq2.
       reflexivity.
@@ -244,7 +244,7 @@ Qed.
 Lemma subst_shift_ident:
     forall t, forall k v,
     subst k v (shift k t) =  t.
-Proof.
+Proof. (* This proof was automatically repaired. *)
   induction t.
   unfold shift. intros.
   simpl.
@@ -252,7 +252,7 @@ Proof.
   intros. simpl. clear H. rewrite nat_compare_lt in l. rewrite l.
   reflexivity.
   intros. simpl.
-  case_eq (nat_compare (n+1) k). intros. apply nat_compare_eq_iff in H0. lia.
+  case_eq (Nat.compare  (n+1) k). intros. apply Nat.compare_eq_iff  in H0. lia.
   intros. apply nat_compare_lt in H0. lia.
   intros. f_equal. lia.
 
@@ -268,7 +268,7 @@ Qed.
 Lemma subst_k_shift_S_k:
     forall t, forall k,
     subst k (Var 0) (shift (S k) t) = t.
-Proof.
+Proof. (* This proof was automatically repaired. *)
   induction t.
   unfold shift. simpl.
   case_eq (lt_dec n 1).
@@ -286,25 +286,25 @@ Proof.
   intros.
   case_eq (lt_dec n k).
   intros. simpl.
-  case_eq (nat_compare n k).
-  intros. apply nat_compare_eq_iff in H1. f_equal. auto.
+  case_eq (n ?= k).
+  intros. apply Nat.compare_eq_iff  in H1. f_equal. auto.
   rewrite H1.
   case_eq (lt_dec k (S k)).
-  intros. simpl. replace (nat_compare k k) with Eq. reflexivity.
-  symmetry. apply nat_compare_eq_iff. reflexivity.
+  intros. simpl. replace (Nat.compare  k k) with Eq . reflexivity.
+  symmetry. apply Nat.compare_eq_iff . reflexivity.
   intros. lia. intros. apply nat_compare_lt in H1.
   case_eq (lt_dec n (S k)).
   intros. simpl.
-  replace (nat_compare n k) with Lt. reflexivity.
+  replace (n ?= k) with Lt . reflexivity.
   symmetry. apply nat_compare_lt. assumption.
   intros. lia. intros. apply nat_compare_gt in H1. lia.
   intros.
   case_eq (lt_dec n (S k)).
   intros. assert (n = k). lia. rewrite H2.
-  simpl. replace (nat_compare k k) with Eq.
-  reflexivity. symmetry. apply nat_compare_eq_iff. reflexivity.
+  simpl. replace (Nat.compare  k k) with  Eq.
+  reflexivity. symmetry. apply Nat.compare_eq_iff . reflexivity.
   intros. simpl.
-  replace (nat_compare (n+1) k) with Gt. f_equal. lia.
+  replace (Nat.compare  (n+1) k) with  Gt. f_equal. lia.
   symmetry. apply nat_compare_gt. lia.
 
 
@@ -378,13 +378,13 @@ Lemma lift_distr_subst:
   forall M N, forall v, forall i b,
     v <= b ->
     lift i b (subst v N M) = subst v (lift i (b-v) N) (lift i (b+1) M).
-Proof.
+Proof. (* This proof was automatically repaired. *)
   induction M. intros N v.
   generalize dependent N.
   generalize dependent n.
   induction v.
-  intros ? ? ? ? HH. simpl. case_eq (nat_compare n 0).
-  intros H. apply nat_compare_eq_iff in H. rewrite H. simpl.
+  intros ? ? ? ? HH. simpl. case_eq (n ?= 0).
+  intros H. apply Nat.compare_eq_iff  in H. rewrite H. simpl.
   replace (b + 1) with (S b) by lia. simpl.
   rewrite lift_0_ident. rewrite lift_0_ident.
   replace (b - 0) with b by lia. reflexivity.
@@ -407,18 +407,18 @@ Proof.
   intros. simpl. f_equal. lia.
 
   intros ? ? ? ? HH. simpl.
-  case_eq (nat_compare n (S v)).
-  intros H. apply nat_compare_eq_iff in H.
+  case_eq (n ?= S  v).
+  intros H. apply Nat.compare_eq_iff  in H.
   rewrite H. simpl.
   case_eq (lt_dec (S v) (b + 1)).
   intros.
-  simpl. replace (nat_compare v v) with Eq.
+  simpl. replace (v ?= v) with Eq .
   replace b with (((b - S v) + (S v))) by lia.
   rewrite lift_lift_rev. reflexivity.
-  lia. symmetry. apply nat_compare_eq_iff. reflexivity.
+  lia. symmetry. apply Nat.compare_eq_iff . reflexivity.
   intros. simpl.
-  case_eq (nat_compare (v+i) v).
-  intros. apply nat_compare_eq_iff in H1.
+  case_eq (v+i ?= v).
+  intros. apply Nat.compare_eq_iff  in H1.
   assert (HHH: i = 0). lia.
   rewrite HHH. rewrite lift_0_ident.
   f_equal. rewrite lift_0_ident. reflexivity.
@@ -432,20 +432,20 @@ Proof.
   intros.
   case_eq (lt_dec n (b+1)).
   simpl. intros.
-  replace (nat_compare n (S v)) with Lt.
+  replace (n ?= S  v) with Lt.
   reflexivity. symmetry. apply nat_compare_lt. assumption.
   intros. lia.
   intros. lia.
   intros. apply nat_compare_gt in H.
   simpl. case_eq (lt_dec (n - 1) b).
   intros. case_eq (lt_dec n (b+1)).
-  intros. simpl. replace (nat_compare n (S v)) with Gt.
+  intros. simpl. replace (Nat.compare  n (S  v)) with Gt.
   reflexivity. symmetry. apply nat_compare_gt. assumption.
   intros. lia.
   intros. case_eq (lt_dec n (b+1)). intros.
   lia. intros. simpl.
-  case_eq (nat_compare (n+i) (S v)).
-  intros. apply nat_compare_eq_iff in H2.
+  case_eq (n+i ?= S  v).
+  intros. apply Nat.compare_eq_iff  in H2.
   lia.
   intros. apply nat_compare_lt in H2.
   lia.
